@@ -6,8 +6,10 @@ import os
 
 app = Flask(__name__)
 
-# Run DB migrations on startup (adds description column if missing)
-run_migrations()
+try:
+    run_migrations()
+except Exception:
+    pass
 
 # In-memory scrape status: source -> 'running' | 'done' | 'error: ...'
 _scrape_status: dict[str, str] = {}
