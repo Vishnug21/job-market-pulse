@@ -48,7 +48,7 @@ function hoursAgo(h) {
   d.setHours(d.getHours() - h);
   return d;
 }
-const NOW = new Date(2026, 5, 4, 14, 0);
+const NOW = new Date();
 function toDate(d) { return d instanceof Date ? d : new Date(String(d).replace(' ', 'T')); }
 function fmtDate(d) {
   d = toDate(d);

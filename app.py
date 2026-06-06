@@ -110,7 +110,7 @@ def search():
                 'location': r[3], 'salary': r[4], 'experience': r[5],
                 'url': r[6], 'applied': r[7], 'source': r[8],
                 'description': r[9] or '',
-                'scraped_at': r[10].strftime('%d %b %Y, %I:%M %p') if r[10] else '',
+                'scraped_at': r[10].isoformat() if r[10] else '',
             }
             for r in rows
         ]
