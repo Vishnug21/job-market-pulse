@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Market Pulse</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}?v=5">
+  <style>
+    .spin { animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script src="{{ url_for('static', filename='app/realdata.js') }}"></script>
+  <script src="{{ url_for('static', filename='app/api.js') }}"></script>
+
+  <script type="text/babel" src="{{ url_for('static', filename='app/data.jsx') }}"></script>
+  <script type="text/babel" src="{{ url_for('static', filename='app/icons.jsx') }}"></script>
+  <script type="text/babel" src="{{ url_for('static', filename='app/components.jsx') }}"></script>
+  <script type="text/babel" src="{{ url_for('static', filename='app/screens-main.jsx') }}"></script>
+  <script type="text/babel" src="{{ url_for('static', filename='app/screens-more.jsx') }}"></script>
+  <script type="text/babel" src="{{ url_for('static', filename='tweaks-panel.jsx') }}"></script>
+  <script type="text/babel" src="{{ url_for('static', filename='app/app.jsx') }}"></script>
+</body>
+</html>

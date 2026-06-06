@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"c:\\\\Users\\\\vishn\\\\job_market_pulse\" /s /b)",
+      "Bash(findstr \".html\")"
+    ]
+  }
+}

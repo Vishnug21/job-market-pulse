@@ -1,0 +1,4 @@
+# Full local dev dependencies (includes scrapers)
+-r requirements.txt
+selenium==4.44.0
+webdriver-manager==4.0.2
