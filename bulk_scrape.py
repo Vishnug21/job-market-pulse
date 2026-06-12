@@ -14,6 +14,7 @@ import time
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scraper'))
 from scraper.naukri import scrape_naukri
+from scraper.Internshala import scrape_internshala
 
 # ── Roles — broad CS/IT coverage ───────────────────────────────────────────────
 # Keep terms generic enough that each returns 20-40 results per city.
@@ -51,10 +52,11 @@ LOCATIONS = [
 
 SOURCES = [
     ("Naukri", scrape_naukri),
+    ("Internshala", scrape_internshala),
 ]
 
-TOTAL_LIMIT        = 500
-COOLDOWN_SECONDS   = 8
+TOTAL_LIMIT        = 50000
+COOLDOWN_SECONDS   = 2
 
 # ── Runner ─────────────────────────────────────────────────────────────────────
 
@@ -74,7 +76,7 @@ def run_bulk():
         for role in ROLES:
             for location in LOCATIONS:
                 combo_num += 1
-                print(f"\n[{combo_num}/{total_combos}] {source_name} → {role} in {location}")
+                print(f"\n[{combo_num}/{total_combos}] {source_name} > {role} in {location}")
                 print("-" * 55)
 
                 try:

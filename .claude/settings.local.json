@@ -2,7 +2,27 @@
   "permissions": {
     "allow": [
       "Bash(dir \"c:\\\\Users\\\\vishn\\\\job_market_pulse\" /s /b)",
-      "Bash(findstr \".html\")"
+      "Bash(findstr \".html\")",
+      "Bash(curl -I http://127.0.0.1:5000)",
+      "Bash(python *)",
+      "Bash(git checkout *)",
+      "Bash(gcloud dataproc *)",
+      "Bash(mkdir -p /c/hadoop/bin)",
+      "Read(//c/hadoop/**)",
+      "Bash(curl -sL -o winutils.exe \"https://github.com/kontext-tech/winutils/raw/master/hadoop-3.4.0-win10-x64/bin/winutils.exe\")",
+      "Bash(curl -sL -o hadoop.dll \"https://github.com/kontext-tech/winutils/raw/master/hadoop-3.4.0-win10-x64/bin/hadoop.dll\")",
+      "Bash(HADOOP_HOME='C:\\\\hadoop' PATH='C:\\\\hadoop\\\\bin:__TRACKED_VAR__' python -c ' *)",
+      "Bash(grep -vE \"WARN|log4j|incubator|SLF4J|Setting|To adjust|^\\\\s*$\")",
+      "Bash(gsutil -m cp -r processed/* gs://job-market-pulse-processed/jobs/)",
+      "PowerShell(gcloud config get-value project *)",
+      "Bash(docker --version)",
+      "Bash(docker compose *)",
+      "Bash(wsl --list)",
+      "PowerShell(docker compose *)",
+      "PowerShell($d=\"C:\\\\Users\\\\vishn\\\\job_market_pulse\\\\airflow\"; docker compose -f \"$d\\\\docker-compose.yml\" --project-directory \"$d\" ps; Write-Output \"---init tail---\"; docker compose -f \"$d\\\\docker-compose.yml\" --project-directory \"$d\" logs airflow-init --tail 15)",
+      "Bash(git bundle *)",
+      "Bash(cp .env ../job-market-pulse-env-BACKUP.txt)",
+      "Bash(git filter-repo *)"
     ]
   }
 }

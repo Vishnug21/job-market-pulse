@@ -114,7 +114,7 @@ function FindJobs({ jobs, onApply, onOpen, query, apiStatus }) {
   const [salDisc,     setSalDisc]     = useS2(false);
   const [sort,        setSort]        = useS2('fit');
   const [hideApplied, setHideApplied] = useS2(false);
-  const [limit,       setLimit]       = useS2(40);
+  const [limit,       setLimit]       = useS2(10000);
 
   // API search state
   const [apiResults,  setApiResults]  = useS2(null);   // null = not yet fetched via API
@@ -183,7 +183,7 @@ function FindJobs({ jobs, onApply, onOpen, query, apiStatus }) {
     return r;
   }, [jobs, apiResults, apiStatus, source, wfh, salDisc, hideApplied, exp, sort, query]);
 
-  useFx2(() => { setLimit(40); }, [source, wfh, salDisc, hideApplied, exp, sort, query]);
+  useFx2(() => { setLimit(10000); }, [source, wfh, salDisc, hideApplied, exp, sort, query]);
   const shown = filtered.slice(0, limit);
 
   const dbTotal = window.RealData.analytics.total;

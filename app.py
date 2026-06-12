@@ -93,7 +93,7 @@ def search():
         FROM jobs
         WHERE {where}
         ORDER BY {order}
-        LIMIT 50
+        LIMIT 10000
     """
 
     try:
