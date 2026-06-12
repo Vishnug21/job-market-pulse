@@ -1,0 +1,98 @@
+# Airflow (LocalExecutor) for the job_market_pulse ETL pipeline.
+#
+#   - airflow-metadata-db : Postgres that backs Airflow itself (NOT the app DB)
+#   - airflow-init        : one-shot db migrate + admin user creation
+#   - airflow-scheduler    : runs the DAGs
+#   - airflow-webserver    : UI at http://localhost:8080  (admin / admin)
+#
+# The pipeline's *source* data lives in your local Postgres on the host, reached
+# from the containers via host.docker.internal. Copy .env.example -> .env first.
+
+x-airflow-common: &airflow-common
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: job-market-airflow:latest
+  environment: &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@airflow-metadata-db/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    # ── job_market_pipeline runtime config (consumed by the DAG + scripts) ──
+    JOB_MARKET_PROJECT_DIR: /opt/project
+    JOB_MARKET_PYTHON: python
+    # App source DB on the host. db.py prefers DATABASE_URL over the .env DB_* vars.
+    DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:project@host.docker.internal:5432/jobmarket}
+    # gcloud/gsutil/bq read credentials from here (mounted from the host below).
+    CLOUDSDK_CONFIG: /home/airflow/.config/gcloud
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./plugins:/opt/airflow/plugins
+    - ..:/opt/project                                        # the whole repo -> /opt/project
+    - ${GCLOUD_CONFIG_DIR}:/home/airflow/.config/gcloud:ro   # host gcloud auth (read-only)
+  user: "${AIRFLOW_UID:-50000}:0"
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  depends_on: &airflow-common-depends-on
+    airflow-metadata-db:
+      condition: service_healthy
+
+services:
+  airflow-metadata-db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow-metadata-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate
+        airflow users create \
+          --username "${AIRFLOW_ADMIN_USER:-admin}" \
+          --password "${AIRFLOW_ADMIN_PASSWORD:-admin}" \
+          --firstname admin --lastname admin \
+          --role Admin --email admin@example.com || true
+    restart: on-failure
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+      airflow-init:
+        condition: service_completed_successfully
+
+volumes:
+  airflow-metadata-db-volume:

@@ -1,0 +1,8 @@
+# Extra Python deps the pipeline tasks import (on top of the Airflow base image).
+# pyspark 4.x is pinned because transform_local.py relies on Spark 4 ANSI-mode
+# semantics; the rest are left unpinned to defer to the Airflow constraints.
+pyspark==4.0.0
+pandas
+pyarrow
+psycopg2-binary
+python-dotenv

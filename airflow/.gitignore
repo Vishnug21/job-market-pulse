@@ -1,0 +1,4 @@
+# Runtime + secrets — never commit
+.env
+logs/
+plugins/
