@@ -1,8 +1,52 @@
 # Job Market Pulse
 
-A personal job market analytics platform built to demonstrate end-to-end data skills — from automated data collection to structured storage, quality validation, and visual reporting. Tracks **1,524 real job listings** across India's top tech cities, sourced live from Naukri and Internshala.
+## 🚀 Data Engineering Pipeline
 
-> Built as a portfolio project targeting **Data Analyst** roles.
+An end-to-end **batch ETL/ELT pipeline** orchestrated with **Apache Airflow**, transforming real-world job data through **PySpark**, and loading into a **GCP data warehouse** (BigQuery). The pipeline is containerized with Docker and runs daily, processing **2,460+ job records** from PostgreSQL → GCS data lake → BigQuery warehouse with automated data-quality gates.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                 Job Market Pulse — Data Pipeline            │
+├─────────────────────────────────────────────────────────────┤
+│
+│  PostgreSQL (2,460 jobs)
+│         │
+│         ▼ [extract_to_gcs]
+│  GCS Raw Bucket (parquet, partitioned by ingest_date)
+│         │
+│         ▼ [transform] PySpark: dedup, enrichment, DQ gate
+│  GCS Processed Bucket (parquet, partitioned by source)
+│         │
+│         ▼ [load_bigquery] Free batch load (hive partitioning)
+│  BigQuery Warehouse (job_market_warehouse.jobs)
+│         │
+│         ▼ [data_quality_check] Row count assertion
+│  ✅ Pipeline passes
+│
+│  Stack: Apache Airflow (LocalExecutor, Docker)
+│         PySpark 4.0 | OpenJDK 17 | Google Cloud SDK
+│         pytest (29 tests) | GitHub Actions CI/CD
+│
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key highlights:**
+- **Orchestration:** 5-stage DAG (extract → transform → upload → load → quality-check) with automated retries, daily scheduling
+- **Transformation:** PySpark SQL: deduplication (URL + title/company/source), schema normalization, field enrichment (salary parsing, location standardization)
+- **Data Quality:** Row-level validations (required-field gate, dedup keys, post-load assertions)
+- **Infrastructure:** Custom Docker image (Spark + Cloud SDK + Airflow), docker-compose stack, environment-based secrets
+- **Testing & CI:** 29-case pytest suite for validation layer, GitHub Actions runs on every push
+- **Code:** All pipeline code is version-controlled; `.env` secrets are gitignored
+
+The pipeline sources data from the analytics platform below and lands analytics-ready data in BigQuery for BI/reporting.
+
+---
+
+## 📊 Full-Stack Analytics Platform
+
+A personal job market analytics platform built to demonstrate end-to-end data skills — from automated data collection to structured storage, quality validation, and visual reporting. Tracks **2,460 real job listings** across India's top tech cities, sourced live from Naukri and Internshala.
+
+> **Dual portfolio:** Data Engineering (Airflow/PySpark pipeline → warehouse) + Software Engineering (Flask API + Power BI dashboards)
 
 ---
 
